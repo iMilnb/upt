@@ -3,33 +3,60 @@
 ### This code is heavily inspired from https://gitorious.org/tomate
 ### And http://stackoverflow.com/questions/14208831/python-apt-pkg-to-obtain-individual-pkg-details
 
+### Example configuration file
+#
+# icondir = '/home/imil/.icons/Faenza/status/scalable/'
+# update_icon = icondir + 'software-update-available-symbolic.svg'
+# essential_icon = icondir + 'software-update-urgent-symbolic.svg'
+# noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
+# working_icon = icondir + 'appointment-soon.svg'
+#
+# logfile = '/home/imil/log/upt.log'
+
 import pygtk
 import gtk
 import os
 import gobject
 import apt
 import time
+import signal
+import sys
+import logging
 import pyinotify
 from threading import Thread
 
 pygtk.require('2.0')
 gtk.gdk.threads_init()
 
+exec(open(os.path.expanduser("~") + '/.uptrc').read())
+
+# simple logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(logfile)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 class Chkupdate:
     def __init__(self):
-        icondir = self.icon_directory()
-        self.icon = gtk.status_icon_new_from_file(icondir + "noop.svg")
+        self.icon = gtk.status_icon_new_from_file(noop_icon)
         self.icon.set_tooltip("Idle")
         self.icon.set_visible(True)
 
         self.update_running = False
 
-    def set_state(self, state):
-        self.icon.set_from_file(self.icon_directory() + state + ".svg")
-        self.icon.set_tooltip(state)
+        signal.signal(signal.SIGINT, self._signal_handler)
 
-    def icon_directory(self):
-        return os.path.dirname(os.path.realpath(__file__)) + os.path.sep
+    def _signal_handler(self, signal, frame):
+        logger.info('exiting')
+        sys.exit(1)
+
+    def set_state(self, state):
+        icon = eval('{0}_icon'.format(state))
+        self.icon.set_from_file(icon)
+        self.icon.set_tooltip(state)
 
     def aptchk(self):
         apt_cache = apt.Cache() #High level
@@ -53,9 +80,10 @@ class Chkupdate:
         return list_pkgs
 
     def update(self, ev=None):
-        print('entering update')
+        logger.info('entering update')
         if self.update_running is False:
             self.update_running = True
+            self.icon.set_from_file(working_icon)
             lst = self.aptchk()
             if lst:  # packages to upgrade
                 state = 'upgrade'
@@ -65,9 +93,9 @@ class Chkupdate:
                 self.set_state(state)
             else:
                 self.set_state('noop')
-                print('nothing new')
+                logger.info('nothing new')
         else:
-            print('update already running')
+            logger.info('update already running')
 
         self.update_running = False
 
@@ -91,4 +119,5 @@ class Chkupdate:
 
 if __name__ == "__main__":
     app = Chkupdate()
+    logger.info('starting upt')
     app.main()
