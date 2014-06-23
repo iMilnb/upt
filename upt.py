@@ -8,7 +8,9 @@ import gtk
 import os
 import gobject
 import apt
+import time
 import pyinotify
+from threading import Thread
 
 pygtk.require('2.0')
 gtk.gdk.threads_init()
@@ -64,8 +66,15 @@ class Chkupdate:
             else:
                 self.set_state('noop')
                 print('nothing new')
+        else:
+            print('update already running')
 
         self.update_running = False
+
+    def timer_update(self):
+        while True:
+            self.update()
+            time.sleep(3600)
 
     def main(self):
         wm = pyinotify.WatchManager()
@@ -74,7 +83,9 @@ class Chkupdate:
         wm.add_watch('/var/lib/apt', mask)
         notifier.start()
 
-        self.update()
+        t = Thread(target=self.timer_update)
+        t.daemon = True
+        t.start()
 
         gtk.main()
 
