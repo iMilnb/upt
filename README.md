@@ -25,9 +25,14 @@ Simply put :
 
     # apt-get install python-gtk2 python-apt python-pyinotify
 
-Feel free to modify `upt`'s notification icons as long as you give them the
-same same:
+`upt` configuration file is rather straightforward:
 
-  * `noop.svg` when no operation is needed
-  * `upgrade.svg` when updated packages are available
-  * `essential.svg` when essential packages updates are available
+    icondir = '/home/imil/.icons/Faenza/status/scalable/'
+    update_icon = icondir + 'software-update-available-symbolic.svg'
+    essential_icon = icondir + 'software-update-urgent-symbolic.svg'
+    noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
+    working_icon = icondir + 'appointment-soon.svg'
+    
+    logfile = '/home/imil/log/upt.log'
+
+Do I really need to explain those? :)
