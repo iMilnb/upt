@@ -28,7 +28,13 @@ from threading import Thread
 pygtk.require('2.0')
 gtk.gdk.threads_init()
 
-exec(open(os.path.expanduser("~") + '/.uptrc').read())
+configfile = os.path.expanduser("~") + '/.uptrc'
+
+if os.path.isfile(configfile):
+    exec(open(configfile).read())
+else:
+    sys.stderr.write('{0} is missing\n'.format(configfile))
+    sys.exit(2)
 
 # simple logging
 logger = logging.getLogger(__name__)
