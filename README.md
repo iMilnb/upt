@@ -33,6 +33,6 @@ Simply put :
     noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
     working_icon = icondir + 'appointment-soon.svg'
     
-    logfile = '/home/imil/log/upt.log'
+    logdir = '/home/imil/log'
 
 Do I really need to explain those? :)
