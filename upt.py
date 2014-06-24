@@ -6,7 +6,7 @@
 ### Example configuration file
 #
 # icondir = '/home/imil/.icons/Faenza/status/scalable/'
-# update_icon = icondir + 'software-update-available-symbolic.svg'
+# upgrade_icon = icondir + 'software-update-available-symbolic.svg'
 # essential_icon = icondir + 'software-update-urgent-symbolic.svg'
 # noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
 # working_icon = icondir + 'appointment-soon.svg'
