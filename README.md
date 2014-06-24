@@ -1,8 +1,8 @@
 ## upt, a simple update notifier
 
 `upt` is a very simple update notifier that does nothing more (yet) than showing
-an icon on [XFCE](http://www.xfce.org)'s (and probably GNOME 2) panel informing
-if there are updates available for your `apt`-based system.
+an icon on [XFCE](http://www.xfce.org), GNOME 2 and awesome (+probably others)
+panels informing if there are updates available for your `apt`-based system.
 
 The very reason of this software to exist is the disappearance of an *XFCE*
 compatible update notifier since *debian/jessie*, due to
