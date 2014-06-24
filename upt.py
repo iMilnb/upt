@@ -11,7 +11,7 @@
 # noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
 # working_icon = icondir + 'appointment-soon.svg'
 #
-# logfile = '/home/imil/log/upt.log'
+# logdir = '/home/imil/log'
 
 import pygtk
 import gtk
@@ -37,13 +37,13 @@ else:
     sys.exit(2)
 
 # simple logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler(logfile)
-handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+if os.path.isdir(logdir):
+    logging.basicConfig(filename='{0}/upt.log'.format(logdir),
+                        format='%(asctime)s - %(message)s',
+                        level=logging.INFO)
+else:
+    logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+    logging.warn('missing logdir {0}, logging to stdout'.format(logdir))
 
 class Chkupdate:
     def __init__(self):
@@ -64,9 +64,9 @@ class Chkupdate:
         }
 
     def quit(self):
-        logger.info('stopping notifier thread')
+        logging.info('stopping notifier thread')
         self.notifier.stop()
-        logger.info('exiting')
+        logging.info('exiting')
         sys.exit(0)
 
     def set_state(self, state):
@@ -96,7 +96,7 @@ class Chkupdate:
         return list_pkgs
 
     def update(self, ev=None):
-        logger.info('entering update')
+        logging.info('entering update')
         if self.update_running is False:
             self.update_running = True
             self.set_state('working')
@@ -106,12 +106,13 @@ class Chkupdate:
                 for pkg in lst:
                     if pkg['essential'] is True:
                         state = 'essential'
-                self.set_state(state)
             else:
-                self.set_state('noop')
-                logger.info('nothing new')
+                state ='noop'
+
+            self.set_state(state)
+            logging.info(self.tt_state[state])
         else:
-            logger.info('update already running')
+            logging.info('update already running')
 
         self.update_running = False
 
@@ -135,7 +136,7 @@ class Chkupdate:
 
 if __name__ == "__main__":
     app = Chkupdate()
-    logger.info('starting upt')
+    logging.info('starting upt')
     try:
         app.main()
     except KeyboardInterrupt:
