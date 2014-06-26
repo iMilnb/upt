@@ -37,13 +37,13 @@ else:
     sys.exit(2)
 
 # simple logging
-if os.path.isdir(logdir):
+if 'logdir' in globals() and os.path.isdir(logdir):
     logging.basicConfig(filename='{0}/upt.log'.format(logdir),
                         format='%(asctime)s - %(message)s',
                         level=logging.INFO)
 else:
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-    logging.warn('missing logdir {0}, logging to stdout'.format(logdir))
+    logging.warn('missing logdir, logging to stdout')
 
 class Chkupdate:
     def __init__(self):
@@ -75,11 +75,15 @@ class Chkupdate:
         self.icon.set_tooltip(self.tt_state[state])
 
     def aptchk(self):
-        apt_cache = apt.Cache() #High level
-
-        apt_cache.open()
 
         list_pkgs = []
+
+        try:
+            apt_cache = apt.Cache()
+        except SystemError:
+            return list_pkgs
+
+        apt_cache.open()
 
         for package_name in apt_cache.keys():
             selected_package = apt_cache[package_name]
