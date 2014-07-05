@@ -11,10 +11,13 @@
 # noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
 # working_icon = icondir + 'appointment-soon.svg'
 #
+# update_program = '/usr/bin/update-manager'
+#
 # logdir = '/home/imil/log'
 
 import pygtk
 import gtk
+import glib
 import os
 import gobject
 import apt
@@ -62,6 +65,12 @@ class Chkupdate:
             'noop': 'No upgrade available',
             'working': 'Operations in progress'
         }
+
+        if 'update_program' in globals():
+             self.icon.connect('activate', self.on_click)
+
+    def on_click(self, foo):
+        glib.spawn_async([update_program])
 
     def quit(self):
         logging.info('stopping notifier thread')
