@@ -2,7 +2,9 @@
 
 `upt` is a very simple update notifier that does nothing more (yet) than showing
 an icon on [XFCE](http://www.xfce.org), GNOME 2 and awesome (+probably others)
-panels informing if there are updates available for your `apt`-based system.
+panels informing if there are updates available for your `apt`-based system.  
+If clicked and the `update_program` variable is set in the configuration file,
+it will also execute the desired program.
 
 The very reason of this software to exist is the disappearance of an *XFCE*
 compatible update notifier since *debian/jessie*, due to
@@ -32,6 +34,8 @@ Simply put :
     essential_icon = icondir + 'software-update-urgent-symbolic.svg'
     noop_icon = icondir + 'keyboard-brightness-symbolic.svg'
     working_icon = icondir + 'appointment-soon.svg'
+    
+    update_program = '/usr/bin/update-manager'
     
     logdir = '/home/imil/log'
 
